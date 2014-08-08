@@ -108,7 +108,19 @@ NSString * const UAProgressViewProgressAnimationKey = @"UAProgressViewProgressAn
     UIColor *tintColor = self.tintColor;
 	
     self.progressView.shapeLayer.strokeColor = tintColor.CGColor;
-    self.progressView.shapeLayer.borderColor = tintColor.CGColor;
+    if (self.borderColor) {
+        self.progressView.shapeLayer.borderColor = self.borderColor.CGColor;
+    } else {
+        self.progressView.shapeLayer.borderColor = tintColor.CGColor;
+    }
+}
+
+- (void)setBorderColor:(UIColor *)borderColor
+{
+    if (_borderColor != borderColor) {
+        self.progressView.shapeLayer.borderColor = borderColor.CGColor;
+        _borderColor = borderColor;
+    }
 }
 
 #pragma mark - Layout
@@ -337,11 +349,11 @@ NSString * const UAProgressViewProgressAnimationKey = @"UAProgressViewProgressAn
     
     CGFloat width = self.frame.size.width;
 	CGFloat borderWidth = self.shapeLayer.borderWidth;
-    return [UIBezierPath bezierPathWithArcCenter:CGPointMake(width/2.0f, width/2.0f)
+    return [[UIBezierPath bezierPathWithArcCenter:CGPointMake(width/2.0f, width/2.0f)
                                           radius:width/2.0f - borderWidth - 0.5
                                       startAngle:startAngle
                                         endAngle:endAngle
-                                       clockwise:YES];
+                                       clockwise:YES] bezierPathByReversingPath];
 }
 
 - (void)updateProgress:(float)progress {
